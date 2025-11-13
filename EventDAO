@@ -1,0 +1,47 @@
+package dao;
+
+import model.Event;
+import java.sql.*;
+import java.util.*;
+
+public class EventDAO {
+
+    public List<Event> searchEvents(String keyword) {
+        List<Event> list = new ArrayList<>();
+        String sql = "SELECT * FROM events WHERE name LIKE ? OR location LIKE ?";
+        try (Connection con = DBConnection.getConnection(); 
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, "%" + keyword + "%");
+            ps.setString(2, "%" + keyword + "%");
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Event(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("location"),
+                        rs.getDate("date").toString(),
+                        rs.getDouble("price"),
+                        rs.getInt("remaining_tickets")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public boolean updateRemainingTickets(int eventId, int newCount) {
+        String sql = "UPDATE events SET remaining_tickets=? WHERE id=?";
+        try (Connection con = DBConnection.getConnection(); 
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, newCount);
+            ps.setInt(2, eventId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+}
