@@ -1,0 +1,22 @@
+package dao;
+
+import model.Ticket;
+import java.sql.*;
+
+public class TicketDAO {
+
+    public void saveBooking(int eventId, int qty, double total) {
+        String sql = "INSERT INTO tickets(event_id, quantity, total_amount) VALUES (?, ?, ?)";
+        try (Connection con = DBConnection.getConnection(); 
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, eventId);
+            ps.setInt(2, qty);
+            ps.setDouble(3, total);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
