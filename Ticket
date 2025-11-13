@@ -1,0 +1,22 @@
+package model;
+
+public class Ticket {
+    private String eventName;
+    private int quantity;
+    private double totalAmount;
+
+    public Ticket(String eventName, int quantity, double totalAmount) {
+        this.eventName = eventName;
+        this.quantity = quantity;
+        this.totalAmount = totalAmount;
+    }
+
+    @Override
+    public String toString() {
+        return "------- EVENT TICKET -------\n" +
+               "Event: " + eventName + "\n" +
+               "Tickets: " + quantity + "\n" +
+               "Total: ₹" + totalAmount + "\n" +
+               "-----------------------------";
+    }
+}
