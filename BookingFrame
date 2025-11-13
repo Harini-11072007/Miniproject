@@ -1,0 +1,52 @@
+package ui;
+
+import model.Event;
+import model.Ticket;
+import service.BookingService;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class BookingFrame extends JFrame {
+
+    BookingService bookingService = new BookingService();
+
+    public BookingFrame(Event event) {
+        setTitle("Book Tickets");
+        setSize(400, 300);
+        setLayout(new GridLayout(6, 1));
+
+        JLabel name = new JLabel("Event: " + event.getName());
+        JLabel date = new JLabel("Date: " + event.getDate());
+        JLabel price = new JLabel("Price: ₹" + event.getPrice());
+        JLabel remain = new JLabel("Remaining Tickets: " + event.getRemainingTickets());
+
+        JTextField qtyField = new JTextField();
+        JButton bookBtn = new JButton("Book Now");
+
+        add(name);
+        add(date);
+        add(price);
+        add(remain);
+        add(new JLabel("Enter Quantity:"));
+        add(qtyField);
+        add(bookBtn);
+
+        bookBtn.addActionListener(e -> {
+            try {
+                int qty = Integer.parseInt(qtyField.getText());
+                if (qty <= 0 || qty > event.getRemainingTickets()) {
+                    JOptionPane.showMessageDialog(this, "Invalid quantity!");
+                    return;
+                }
+
+                Ticket ticket = bookingService.bookTickets(event, qty);
+                new TicketPrintFrame(ticket).setVisible(true);
+                dispose();
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Enter valid number!");
+            }
+        });
+    }
+}
