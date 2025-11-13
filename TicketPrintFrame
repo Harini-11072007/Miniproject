@@ -1,0 +1,15 @@
+package ui;
+
+import model.Ticket;
+import javax.swing.*;
+
+public class TicketPrintFrame extends JFrame {
+
+    public TicketPrintFrame(Ticket ticket) {
+        setTitle("Ticket Details");
+        setSize(400, 300);
+        JTextArea area = new JTextArea(ticket.toString());
+        area.setEditable(false);
+        add(new JScrollPane(area));
+    }
+}
