@@ -1,0 +1,55 @@
+package ui;
+
+import dao.EventDAO;
+import model.Event;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
+
+public class EventSearchFrame extends JFrame {
+
+    EventDAO eventDAO = new EventDAO();
+    DefaultListModel<Event> model = new DefaultListModel<>();
+    JList<Event> eventList = new JList<>(model);
+
+    public EventSearchFrame() {
+        setTitle("Event Search");
+        setSize(700, 500);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        JTextField searchField = new JTextField(25);
+        JButton searchBtn = new JButton("Search");
+
+        JPanel top = new JPanel();
+        top.add(new JLabel("Search Event:"));
+        top.add(searchField);
+        top.add(searchBtn);
+
+        add(top, BorderLayout.NORTH);
+        add(new JScrollPane(eventList), BorderLayout.CENTER);
+
+        JButton viewBtn = new JButton("View / Book");
+        add(viewBtn, BorderLayout.SOUTH);
+
+        searchBtn.addActionListener(e -> load(searchField.getText()));
+        viewBtn.addActionListener(e -> {
+            Event selected = eventList.getSelectedValue();
+            if (selected != null)
+                new BookingFrame(selected).setVisible(true);
+        });
+
+        load("");
+    }
+
+    void load(String keyword) {
+        model.clear();
+        List<Event> list = eventDAO.searchEvents(keyword);
+        for (Event e : list) model.addElement(e);
+    }
+
+    public static void main(String[] args) {
+        new EventSearchFrame().setVisible(true);
+    }
+}
