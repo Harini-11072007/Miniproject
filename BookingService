@@ -1,0 +1,22 @@
+package service;
+
+import dao.EventDAO;
+import dao.TicketDAO;
+import model.Event;
+import model.Ticket;
+
+public class BookingService {
+
+    EventDAO eventDAO = new EventDAO();
+    TicketDAO ticketDAO = new TicketDAO();
+
+    public Ticket bookTickets(Event event, int qty) {
+        double total = qty * event.getPrice();
+        int newRemaining = event.getRemainingTickets() - qty;
+
+        eventDAO.updateRemainingTickets(event.getId(), newRemaining);
+        ticketDAO.saveBooking(event.getId(), qty, total);
+
+        return new Ticket(event.getName(), qty, total);
+    }
+}
